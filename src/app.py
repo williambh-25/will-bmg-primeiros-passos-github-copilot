@@ -121,5 +121,6 @@ def remove_participant(activity_name: str, body: dict):
     activity = activities[activity_name]
     if email not in activity["participants"]:
         raise HTTPException(status_code=404, detail="Participante não encontrado nesta atividade")
-    activity["participants"].remove(email)
+    with participants_lock:
+        activity["participants"].remove(email)
     return {"message": f"{email} removido(a) de {activity_name} com sucesso"}
