@@ -21,28 +21,42 @@ document.addEventListener("DOMContentLoaded", () => {
         const spotsLeft = details.max_participants - details.participants.length;
 
         // Monta a lista de participantes como uma lista com marcadores
-        let participantsHTML = "";
+        const participantsSection = document.createElement("div");
+        participantsSection.className = "participants-section";
+
+        const participantsTitle = document.createElement("strong");
+        participantsTitle.textContent = "Participantes:";
+        participantsSection.appendChild(participantsTitle);
+
         if (details.participants && details.participants.length > 0) {
-          participantsHTML = `
-            <div class="participants-section">
-              <strong>Participantes:</strong>
-              <ul class="participants-list">
-                ${details.participants.map(email => `
-                  <li class="participant-item">
-                    <span>${email}</span>
-                    <button class="delete-participant" title="Remover participante" data-activity="${name}" data-email="${email}">🗑️</button>
-                  </li>
-                `).join("")}
-              </ul>
-            </div>
-          `;
+          const participantsList = document.createElement("ul");
+          participantsList.className = "participants-list";
+
+          details.participants.forEach(email => {
+            const participantItem = document.createElement("li");
+            participantItem.className = "participant-item";
+
+            const emailSpan = document.createElement("span");
+            emailSpan.textContent = email;
+            participantItem.appendChild(emailSpan);
+
+            const deleteButton = document.createElement("button");
+            deleteButton.className = "delete-participant";
+            deleteButton.title = "Remover participante";
+            deleteButton.dataset.activity = name;
+            deleteButton.dataset.email = email;
+            deleteButton.textContent = "🗑️";
+            participantItem.appendChild(deleteButton);
+
+            participantsList.appendChild(participantItem);
+          });
+
+          participantsSection.appendChild(participantsList);
         } else {
-          participantsHTML = `
-            <div class="participants-section">
-              <strong>Participantes:</strong>
-              <span class="no-participants">Nenhum participante inscrito ainda.</span>
-            </div>
-          `;
+          const noParticipantsMessage = document.createElement("span");
+          noParticipantsMessage.className = "no-participants";
+          noParticipantsMessage.textContent = "Nenhum participante inscrito ainda.";
+          participantsSection.appendChild(noParticipantsMessage);
         }
 
         activityCard.innerHTML = `
