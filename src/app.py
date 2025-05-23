@@ -111,8 +111,11 @@ def signup_for_activity(activity_name: str, email: str):
 
 
 @app.delete("/activities/{activity_name}/remove")
-def remove_participant(activity_name: str, email: str):
+def remove_participant(activity_name: str, body: dict):
     """Remove um participante de uma atividade"""
+    email = body.get("email")
+    if not email:
+        raise HTTPException(status_code=400, detail="Email é obrigatório")
     if activity_name not in activities:
         raise HTTPException(status_code=404, detail="Atividade não encontrada")
     activity = activities[activity_name]
